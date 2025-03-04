@@ -71,8 +71,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👨‍💻 Author
 
 Vedant 
-- GitHub: [@vedants556](https://github.com/vedants556)
-- LinkedIn: [vedant-shelar](www.linkedin.com/in/vedant-shelar-41923724b)
+- GitHub: [@Saniikaa](https://github.com/Saniikaa)
+
 
 ## 🙏 Acknowledgements
 
