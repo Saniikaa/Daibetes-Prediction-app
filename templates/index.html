@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css')}}">
+    <style>
+        .gif-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 400px; /* Adjust height as needed */
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">DIABETES PREDICTION</h1>
+        
+        <!-- Prediction Form -->
+        <div class="row align-items-center p-4">
+            <div class="col-md-4 text-center">
+                <img src="{{ url_for('static', filename='images/Diabetes (1).gif') }}" alt="Left Image" class="gif-image">
+            </div>
+            <div class="col-md-4">
+                <form action="/predict" method="POST">
+                    <h2>Input Features</h2>
+                    <div class="mb-3">
+                        <label for="pregnancies" class="form-label">Pregnancies:</label>
+                        <input type="number" id="pregnancies" name="pregnancies" class="form-control" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="glucose" class="form-label">Glucose:</label>
+                        <input type="number" id="glucose" name="glucose" class="form-control" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="blood_pressure" class="form-label">Blood Pressure:</label>
+                        <input type="number" id="blood_pressure" name="blood_pressure" class="form-control" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="skin_thickness" class="form-label">Skin Thickness:</label>
+                        <input type="number" id="skin_thickness" name="skin_thickness" class="form-control" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="insulin" class="form-label">Insulin:</label>
+                        <input type="number" id="insulin" name="insulin" class="form-control" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="bmi" class="form-label">BMI:</label>
+                        <input type="number" step="0.1" id="bmi" name="bmi" class="form-control" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="diabetes_pedigree_function" class="form-label">Diabetes Pedigree Function:</label>
+                        <input type="number" step="0.01" id="diabetes_pedigree_function" name="diabetes_pedigree_function" class="form-control" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Age:</label>
+                        <input type="number" id="age" name="age" class="form-control" min="0" required>
+                    </div>
+                    
+                    <!-- Add a hidden input field for the model -->
+                    <input type="hidden" name="model" value="logistic">
+                    
+                    <button type="submit" class="btn btn-primary">Predict</button>
+                </form>
+            </div>
+            <div class="col-md-4 text-center">
+                <img src="{{ url_for('static', filename='images/Diabetes.gif')}}" alt="Right Image" class="gif-image">
+            </div>
+        </div>
+        
+        <!-- Prediction Result -->
+        <div class="alert mt-4" id="prediction-result" style="display: none;">
+            <h2 id="result-title"></h2>
+            <p id="result-text"></p>
+        </div>
+        <div class="alert alert-warning" id="no-input-warning" style="display: none;">
+            <p class="text-center">Please enter the required information before making a prediction.</p>
+        </div>
+        
+
+        <!-- Information Table -->
+        <h2 class="mt-5">Diabetes-Related Terms and Normal Ranges</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Term</th>
+                    <th>Description</th>
+                    <th>Normal Range</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Pregnancies</td>
+                    <td>Number of times a person has been pregnant.</td>
+                    <td>No specific range; varies widely.</td>
+                </tr>
+                <tr>
+                    <td>Glucose</td>
+                    <td>Blood glucose level measured in mg/dL.</td>
+                    <td>Fasting: 70 to 99 mg/dL<br>2 hours post-meal: less 140 mg/dL</td>
+                </tr>
+                <tr>
+                    <td>Blood Pressure</td>
+                    <td>Pressure in the arteries during heartbeats.</td>
+                    <td>Systolic less than 120 mm Hg<br>Diastolic less than 80 mm Hg</td>
+                </tr>
+                <tr>
+                    <td>Skin Thickness</td>
+                    <td>Thickness of skin fold at the triceps.</td>
+                    <td>Generally less than 20 mm</td>
+                </tr>
+                <tr>
+                    <td>Insulin</td>
+                    <td>Insulin level in the blood, measured in μU/mL.</td>
+                    <td>Normal fasting: 2 to 25 μU/mL</td>
+                </tr>
+                <tr>
+                    <td>BMI</td>
+                    <td>Body Mass Index, a measure of body fat.</td>
+                    <td>Normal: 18.5 to 24.9</td>
+                </tr>
+                <tr>
+                    <td>Diabetes Pedigree Function</td>
+                    <td>Score assessing genetic influence on diabetes.</td>
+                    <td>No specific range; lower is better.</td>
+                </tr>
+                <tr>
+                    <td>Age</td>
+                    <td>Age of the individual in years.</td>
+                    <td>No specific range; varies widely.</td>
+                </tr>
+                <tr>
+                    <td>Outcome</td>
+                    <td>Indicates presence (1) or absence (0) of diabetes.</td>
+                    <td>Binary: 0 or 1</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const prediction = "{{ prediction }}";
+        const errorMessage = "{{ error_message }}";
+
+        const resultTitle = document.getElementById('result-title');
+        const resultText = document.getElementById('result-text');
+        const predictionResultDiv = document.getElementById('prediction-result');
+        const noInputWarning = document.getElementById('no-input-warning');
+
+        if (prediction === "") {
+            noInputWarning.style.display = "block";
+            predictionResultDiv.style.display = "none";
+        } else {
+            noInputWarning.style.display = "none";
+            predictionResultDiv.style.display = "block";
+
+            if (prediction === "0") {
+                resultTitle.textContent = "Congratulations!";
+                resultText.textContent = "You do not have diabetes.";
+                predictionResultDiv.className = "alert alert-success text-center";
+                confetti();
+            } else if (prediction === "1") {
+                resultTitle.textContent = "Diagnosis:";
+                resultText.textContent = "You have diabetes.";
+                predictionResultDiv.className = "alert alert-danger text-center";
+            } else if (prediction === "error") {
+                resultTitle.textContent = "Error";
+                resultText.textContent = "An error occurred: " + errorMessage;
+                predictionResultDiv.className = "alert alert-warning text-center";
+            }
+        }
+    </script>
+    
+</body>
+</html>
